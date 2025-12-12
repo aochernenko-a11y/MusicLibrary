@@ -1,73 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicLibrary
 {
-    public class Album : ITrackCollection
+    public class Album : TrackCollectionBase
     {
-        private string name;
-        private int year;
-        private Artist artist;
-        private List<MusicTrack> tracks;
-
-        public string Name
-        {
-            get => throw new NotImplementedException();
-        }
-
-        public int Year
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public Artist Artist
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public IReadOnlyList<MusicTrack> Tracks
-        {
-            get => throw new NotImplementedException();
-        }
+        public int Year { get; }
+        public Artist Artist { get; }
 
         public Album(string name, int year, Artist artist)
+            : base(name)
         {
-            throw new NotImplementedException();
+            if (year <= 0)
+                throw new ArgumentOutOfRangeException(nameof(year));
+
+            Artist = artist ?? throw new ArgumentNullException(nameof(artist));
+            Year = year;
         }
 
-        public void AddTrack(MusicTrack track)
+        public override string GetDisplayText()
         {
-            throw new NotImplementedException();
-        }
-
-        public bool RemoveTrack(MusicTrack track)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetTotalDuration()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<MusicTrack> FindByGenre(Genre genre)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<MusicTrack> FindByArtist(string artistName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetDisplayText()
-        {
-            throw new NotImplementedException();
+            return $"Album: \"{Name}\" ({Year}), Artist: {Artist.Name}, Tracks: {Tracks.Count}, Duration: {GetTotalDuration()} s";
         }
     }
 }

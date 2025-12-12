@@ -1,71 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicLibrary
 {
-    public class Playlist : ITrackCollection
+    public class Playlist : TrackCollectionBase
     {
-        private string name;
-        private string ownerName;
-        private List<MusicTrack> tracks;
-
-        public string Name
-        {
-            get => throw new NotImplementedException();
-        }
-
-        public string OwnerName
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public IReadOnlyList<MusicTrack> Tracks
-        {
-            get => throw new NotImplementedException();
-        }
+        public string OwnerName { get; }
 
         public Playlist(string name, string ownerName)
+            : base(name)
         {
-            throw new NotImplementedException();
+            OwnerName = ownerName ?? "Unknown";
         }
 
-        public void AddTrack(MusicTrack track)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool RemoveTrack(MusicTrack track)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetTotalDuration()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<MusicTrack> FindByGenre(Genre genre)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<MusicTrack> FindByArtist(string artistName)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Перемішування треків у плейлисті.
+        /// </summary>
         public void Shuffle()
         {
-            throw new NotImplementedException();
+            // Доступ до базового списку через foreach підтримується,
+            // але тут достатньо створити копію і заново додати в новому порядку.
+            var tracksCopy = new System.Collections.Generic.List<MusicTrack>(Tracks);
+            var random = new Random();
+
+            for (int i = tracksCopy.Count - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                (tracksCopy[i], tracksCopy[j]) = (tracksCopy[j], tracksCopy[i]);
+            }
+
+            // Очищаємо і додаємо по-новому
+            foreach (var track in Tracks)
+            {
+                RemoveTrack(track);
+            }
+
+            foreach (var track in tracksCopy)
+            {
+                AddTrack(track);
+            }
         }
 
-        public string GetDisplayText()
+        public override string GetDisplayText()
         {
-            throw new NotImplementedException();
+            return $"Playlist: \"{Name}\" (Owner: {OwnerName}), Tracks: {Tracks.Count}, Duration: {GetTotalDuration()} s";
         }
     }
 }

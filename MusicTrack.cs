@@ -6,78 +6,79 @@ using System.Threading.Tasks;
 
 namespace MusicLibrary
 {
-    public class MusicTrack : IPrintable
+    public class MusicTrack : IPrintable, IComparable<MusicTrack>, ICloneable
     {
-        private int id;
-        private string title;
-        private Artist artist;
-        private Genre genre;
-        private int durationSeconds;
-        private double rating;
+        private int ratingVotes;
 
-        public int Id
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        public int Id { get; }
+        public string Title { get; private set; }
+        public Artist Artist { get; private set; }
+        public Genre Genre { get; private set; }
+        public int DurationSeconds { get; private set; }
+        public double Rating { get; private set; }
 
-        public string Title
+        public MusicTrack(int id, string title, Artist artist, Genre genre, int durationSeconds)
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+            if (durationSeconds <= 0)
+                throw new ArgumentOutOfRangeException(nameof(durationSeconds));
 
-        public Artist Artist
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public Genre Genre
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public int DurationSeconds
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public double Rating
-        {
-            get => throw new NotImplementedException();
-            private set => throw new NotImplementedException();
-        }
-
-        public MusicTrack(int id,
-                          string title,
-                          Artist artist,
-                          Genre genre,
-                          int durationSeconds)
-        {
-            throw new NotImplementedException();
+            Id = id;
+            Title = title ?? throw new ArgumentNullException(nameof(title));
+            Artist = artist ?? throw new ArgumentNullException(nameof(artist));
+            Genre = genre;
+            DurationSeconds = durationSeconds;
+            Rating = 0;
+            ratingVotes = 0;
         }
 
         public void Rename(string newTitle)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(newTitle))
+                throw new ArgumentException("Назва треку не може бути порожньою.", nameof(newTitle));
+
+            Title = newTitle;
         }
 
         public void ChangeGenre(Genre newGenre)
         {
-            throw new NotImplementedException();
+            Genre = newGenre;
         }
 
-        public void AddRating(int score)
+
+        public void AddRating(double score)
         {
-            throw new NotImplementedException();
+            if (score < 1 || score > 10)
+                throw new ArgumentOutOfRangeException(nameof(score), "Рейтинг має бути в діапазоні 1..10.");
+
+            Rating = (Rating * ratingVotes + score) / (ratingVotes + 1);
+            ratingVotes++;
         }
+
 
         public string GetDisplayText()
         {
-            throw new NotImplementedException();
+            TimeSpan duration = TimeSpan.FromSeconds(DurationSeconds);
+            return $"Track: \"{Title}\" | {Artist.Name} | {Genre} | {duration:mm\\:ss} | Rating: {Rating:F1}";
+        }
+
+        public int CompareTo(MusicTrack other)
+        {
+            if (other == null) return 1;
+
+            int titleCompare = string.Compare(Title, other.Title, StringComparison.OrdinalIgnoreCase);
+            if (titleCompare != 0)
+                return titleCompare;
+
+            return DurationSeconds.CompareTo(other.DurationSeconds);
+        }
+
+        public object Clone()
+        {
+            return new MusicTrack(Id, Title, Artist, Genre, DurationSeconds)
+            {
+                Rating = Rating,
+                ratingVotes = ratingVotes
+            };
         }
     }
 }

@@ -1,43 +1,29 @@
-﻿using System;
+﻿using MusicLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicLibrary
 {
     public class Artist : IPrintable
     {
-        private int id;
-        private string name;
-        private string country;
-
-        public int Id
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public string Name
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        public string Country
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        public int Id { get; }
+        public string Name { get; }
+        public string Country { get; }
 
         public Artist(int id, string name, string country)
         {
-            throw new NotImplementedException();
+            Id = id;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Country = country ?? string.Empty;
         }
 
         public string GetDisplayText()
         {
-            throw new NotImplementedException();
+            return $"Artist: {Name} ({Country}), Id = {Id}";
         }
     }
 }

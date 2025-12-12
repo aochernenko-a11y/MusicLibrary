@@ -14,24 +14,18 @@ namespace MusicLibrary
         IReadOnlyList<Playlist> Playlists { get; }
 
         Artist CreateArtist(int id, string name, string country);
-
-        MusicTrack CreateTrack(
-            int id,
-            string title,
-            Artist artist,
-            Genre genre,
-            int durationSeconds);
-
+        MusicTrack CreateTrack(int id, string title, Artist artist, Genre genre, int durationSeconds);
         Album CreateAlbum(string name, int year, Artist artist);
-
         Playlist CreatePlaylist(string name, string ownerName);
 
         void AddTrackToAlbum(Album album, MusicTrack track);
-
         void AddTrackToPlaylist(Playlist playlist, MusicTrack track);
 
         IEnumerable<MusicTrack> FindTracksByArtist(string artistName);
-
         IEnumerable<MusicTrack> FindTracksByGenre(Genre genre);
+
+        bool DeleteTrack(MusicTrack track);
+        bool DeleteAlbum(Album album);
+        bool DeletePlaylist(Playlist playlist);
     }
 }
